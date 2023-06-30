@@ -12,16 +12,12 @@ namespace Charix.YandexGames
     {
         private static Action s_onAuthorizeSuccessCallback;
         private static Action<string> s_onAuthorizeErrorCallback;
-
         private static Action s_onRequestPersonalProfileDataPermissionSuccessCallback;
         private static Action<string> s_onRequestPersonalProfileDataPermissionErrorCallback;
-
         private static Action<PlayerAccountProfileDataResponse> s_onGetProfileDataSuccessCallback;
         private static Action<string> s_onGetProfileDataErrorCallback;
-
         private static Action s_onSetPlayerDataSuccessCallback;
         private static Action<string> s_onSetPlayerDataErrorCallback;
-
         private static Action<string> s_onGetPlayerDataSuccessCallback;
         private static Action<string> s_onGetPlayerDataErrorCallback;
 
@@ -123,16 +119,16 @@ namespace Charix.YandexGames
         /// <remarks>
         /// Requires authorization. Use <see cref="IsAuthorized"/> and <see cref="Authorize"/>.
         /// </remarks>
-        public static void GetProfileData(Action<PlayerAccountProfileDataResponse> onSuccessCallback, Action<string> onErrorCallback = null, ProfilePictureSize pictureSize = ProfilePictureSize.medium)
+        public static void GetProfileData(Action<PlayerAccountProfileDataResponse> onSuccessCallback, Action<string> onErrorCallback = null)
         {
             s_onGetProfileDataSuccessCallback = onSuccessCallback;
             s_onGetProfileDataErrorCallback = onErrorCallback;
 
-            PlayerAccountGetProfileData(OnGetProfileDataSuccessCallback, OnGetProfileDataErrorCallback, pictureSize.ToString());
+            PlayerAccountGetProfileData(OnGetProfileDataSuccessCallback, OnGetProfileDataErrorCallback);
         }
 
         [DllImport("__Internal")]
-        private static extern void PlayerAccountGetProfileData(Action<string> successCallback, Action<string> errorCallback, string pictureSize);
+        private static extern void PlayerAccountGetProfileData(Action<string> successCallback, Action<string> errorCallback);
 
         [MonoPInvokeCallback(typeof(Action<string>))]
         private static void OnGetProfileDataSuccessCallback(string profileDataResponseJson)
@@ -157,39 +153,39 @@ namespace Charix.YandexGames
 
         #region PlayerData
         /// <summary>
-        /// Stores Cloud Save data in the player account. Proxy for player.setData() with "flush" setting set to true.
+        /// Cloud save method, proxy for player.setData(), where "flush" setting is always true.
         /// </summary>
-        public static void SetCloudSaveData(string cloudSaveDataJson, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
+        public static void SetPlayerData(string playerDataJson, Action onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
-            if (cloudSaveDataJson == null)
-                throw new ArgumentNullException(nameof(cloudSaveDataJson));
+            if (playerDataJson == null)
+                throw new ArgumentNullException(nameof(playerDataJson));
 
-            if (string.IsNullOrEmpty(cloudSaveDataJson))
-                cloudSaveDataJson = "{}";
+            if (string.IsNullOrEmpty(playerDataJson))
+                playerDataJson = "{}";
 
             s_onSetPlayerDataSuccessCallback = onSuccessCallback;
             s_onSetPlayerDataErrorCallback = onErrorCallback;
 
-            PlayerAccountSetCloudSaveData(cloudSaveDataJson, OnSetCloudSaveDataSuccessCallback, OnSetCloudSaveDataErrorCallback);
+            PlayerAccountSetPlayerData(playerDataJson, OnSetPlayerDataSuccessCallback, OnSetPlayerDataErrorCallback);
         }
 
         [DllImport("__Internal")]
-        private static extern void PlayerAccountSetCloudSaveData(string cloudSaveDataJson, Action successCallback, Action<string> errorCallback);
+        private static extern void PlayerAccountSetPlayerData(string playerDataJson, Action successCallback, Action<string> errorCallback);
 
         [MonoPInvokeCallback(typeof(Action))]
-        private static void OnSetCloudSaveDataSuccessCallback()
+        private static void OnSetPlayerDataSuccessCallback()
         {
             if (YandexGamesSdk.CallbackLogging)
-                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetCloudSaveDataSuccessCallback)} invoked");
+                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetPlayerDataSuccessCallback)} invoked");
 
             s_onSetPlayerDataSuccessCallback?.Invoke();
         }
 
         [MonoPInvokeCallback(typeof(Action<string>))]
-        private static void OnSetCloudSaveDataErrorCallback(string errorMessage)
+        private static void OnSetPlayerDataErrorCallback(string errorMessage)
         {
             if (YandexGamesSdk.CallbackLogging)
-                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetCloudSaveDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
+                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetPlayerDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
 
             s_onSetPlayerDataErrorCallback?.Invoke(errorMessage);
         }
@@ -201,31 +197,31 @@ namespace Charix.YandexGames
         /// Callback that returns unparsed JSON string.<br/>
         /// If player does not have any data saved, an empty JSON "{}" is returned.
         /// </param>
-        public static void GetCloudSaveData(Action<string> onSuccessCallback = null, Action<string> onErrorCallback = null)
+        public static void GetPlayerData(Action<string> onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
             s_onGetPlayerDataSuccessCallback = onSuccessCallback;
             s_onGetPlayerDataErrorCallback = onErrorCallback;
 
-            PlayerAccountGetCloudSaveData(OnGetCloudSaveDataSuccessCallback, OnGetCloudSaveDataErrorCallback);
+            PlayerAccountGetPlayerData(OnGetPlayerDataSuccessCallback, OnGetPlayerDataErrorCallback);
         }
 
         [DllImport("__Internal")]
-        private static extern void PlayerAccountGetCloudSaveData(Action<string> successCallback, Action<string> errorCallback);
+        private static extern void PlayerAccountGetPlayerData(Action<string> successCallback, Action<string> errorCallback);
 
         [MonoPInvokeCallback(typeof(Action<string>))]
-        private static void OnGetCloudSaveDataSuccessCallback(string playerDataJson)
+        private static void OnGetPlayerDataSuccessCallback(string playerDataJson)
         {
             if (YandexGamesSdk.CallbackLogging)
-                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetCloudSaveDataSuccessCallback)} invoked, {nameof(playerDataJson)} = {playerDataJson}");
+                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetPlayerDataSuccessCallback)} invoked, {nameof(playerDataJson)} = {playerDataJson}");
 
             s_onGetPlayerDataSuccessCallback?.Invoke(playerDataJson);
         }
 
         [MonoPInvokeCallback(typeof(Action<string>))]
-        private static void OnGetCloudSaveDataErrorCallback(string errorMessage)
+        private static void OnGetPlayerDataErrorCallback(string errorMessage)
         {
             if (YandexGamesSdk.CallbackLogging)
-                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetCloudSaveDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
+                Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetPlayerDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
 
             s_onGetPlayerDataErrorCallback?.Invoke(errorMessage);
         }
