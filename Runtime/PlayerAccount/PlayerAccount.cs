@@ -19,11 +19,11 @@ namespace Charix.YandexGames
         private static Action<PlayerAccountProfileDataResponse> s_onGetProfileDataSuccessCallback;
         private static Action<string> s_onGetProfileDataErrorCallback;
 
-        private static Action s_onSetCloudSaveDataSuccessCallback;
-        private static Action<string> s_onSetCloudSaveDataErrorCallback;
+        private static Action s_onSetPlayerDataSuccessCallback;
+        private static Action<string> s_onSetPlayerDataErrorCallback;
 
-        private static Action<string> s_onGetCloudSaveDataSuccessCallback;
-        private static Action<string> s_onGetCloudSaveDataErrorCallback;
+        private static Action<string> s_onGetPlayerDataSuccessCallback;
+        private static Action<string> s_onGetPlayerDataErrorCallback;
 
         /// <summary>
         /// Use this before calling SDK methods that require authorization.
@@ -167,8 +167,8 @@ namespace Charix.YandexGames
             if (string.IsNullOrEmpty(cloudSaveDataJson))
                 cloudSaveDataJson = "{}";
 
-            s_onSetCloudSaveDataSuccessCallback = onSuccessCallback;
-            s_onSetCloudSaveDataErrorCallback = onErrorCallback;
+            s_onSetPlayerDataSuccessCallback = onSuccessCallback;
+            s_onSetPlayerDataErrorCallback = onErrorCallback;
 
             PlayerAccountSetCloudSaveData(cloudSaveDataJson, OnSetCloudSaveDataSuccessCallback, OnSetCloudSaveDataErrorCallback);
         }
@@ -182,7 +182,7 @@ namespace Charix.YandexGames
             if (YandexGamesSdk.CallbackLogging)
                 Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetCloudSaveDataSuccessCallback)} invoked");
 
-            s_onSetCloudSaveDataSuccessCallback?.Invoke();
+            s_onSetPlayerDataSuccessCallback?.Invoke();
         }
 
         [MonoPInvokeCallback(typeof(Action<string>))]
@@ -191,7 +191,7 @@ namespace Charix.YandexGames
             if (YandexGamesSdk.CallbackLogging)
                 Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnSetCloudSaveDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
 
-            s_onSetCloudSaveDataErrorCallback?.Invoke(errorMessage);
+            s_onSetPlayerDataErrorCallback?.Invoke(errorMessage);
         }
 
         /// <summary>
@@ -203,8 +203,8 @@ namespace Charix.YandexGames
         /// </param>
         public static void GetCloudSaveData(Action<string> onSuccessCallback = null, Action<string> onErrorCallback = null)
         {
-            s_onGetCloudSaveDataSuccessCallback = onSuccessCallback;
-            s_onGetCloudSaveDataErrorCallback = onErrorCallback;
+            s_onGetPlayerDataSuccessCallback = onSuccessCallback;
+            s_onGetPlayerDataErrorCallback = onErrorCallback;
 
             PlayerAccountGetCloudSaveData(OnGetCloudSaveDataSuccessCallback, OnGetCloudSaveDataErrorCallback);
         }
@@ -218,7 +218,7 @@ namespace Charix.YandexGames
             if (YandexGamesSdk.CallbackLogging)
                 Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetCloudSaveDataSuccessCallback)} invoked, {nameof(playerDataJson)} = {playerDataJson}");
 
-            s_onGetCloudSaveDataSuccessCallback?.Invoke(playerDataJson);
+            s_onGetPlayerDataSuccessCallback?.Invoke(playerDataJson);
         }
 
         [MonoPInvokeCallback(typeof(Action<string>))]
@@ -227,7 +227,7 @@ namespace Charix.YandexGames
             if (YandexGamesSdk.CallbackLogging)
                 Debug.Log($"{nameof(PlayerAccount)}.{nameof(OnGetCloudSaveDataErrorCallback)} invoked, {nameof(errorMessage)} = {errorMessage}");
 
-            s_onGetCloudSaveDataErrorCallback?.Invoke(errorMessage);
+            s_onGetPlayerDataErrorCallback?.Invoke(errorMessage);
         }
         #endregion
     }
